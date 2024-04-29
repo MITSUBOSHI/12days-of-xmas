@@ -1,0 +1,23 @@
+.button-container {
+  width: 90%;
+  margin: 0 auto;
+  text-decoration: none;
+  display: inline-block;
+  padding: 0.1rem 0.2rem;
+
+  .left {
+    float: left;
+  }
+  
+  .right {
+    float: right;
+  }
+}
+
+.card {
+  width: 100%;
+
+  .character-image {
+    width: 100%;
+  }
+}
