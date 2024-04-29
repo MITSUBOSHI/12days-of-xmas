@@ -1,0 +1,28 @@
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0.1rem;
+  text-align: center;
+}
+
+h1 {
+  font-weight: 400;
+  text-transform: uppercase;
+  font-size: 1.5rem;
+}
+
+.container {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+
+  button {
+    width: 100%;
+    margin: 0.1rem;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
