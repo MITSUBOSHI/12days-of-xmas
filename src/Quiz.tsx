@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Days } from "./Days";
 import CorrectSVG from './assets/correct.svg';
 import IncorrectSVG from './assets/incorrect.svg';
@@ -15,6 +15,7 @@ type ChoiceType = {
 type QuickResultType = null | 'correct' | 'incorrect';
 
 const shuffleArray = (arr: number[]) => arr.sort(() => Math.random() - Math.random());
+const dayNumbers = Days.map((d) => d.dayNumber);
 const choices = (dayNumber: number, dayNumbers: number[]) => {
   const incorrectChoices = shuffleArray(dayNumbers.filter((n) => n !== dayNumber));
   const choiceDayNumbers = shuffleArray([dayNumber, incorrectChoices[0], incorrectChoices[1]]);
@@ -30,13 +31,13 @@ const choices = (dayNumber: number, dayNumbers: number[]) => {
   return choices;
 };
 const Quiz = () => {
-  const dayNumbers = Days.map((d) => d.dayNumber);
   const [remainingDayNumbers, setRemainingDayNumbers] = useState(shuffleArray(dayNumbers));
   const [showQuickResult, setShowQuickResult] = useState<QuickResultType>(null);
   const [quizResult, setQuizResult] = useState<QuizResultType>({correctCount: 0, answeredCount: 0});
 
   const currentDayNumber = remainingDayNumbers[0];
   const currentDay = Days.find((d) => d.dayNumber === currentDayNumber);
+  const currentChoices = useMemo(() => choices(currentDayNumber, dayNumbers), [currentDayNumber]);
   const quickResultIcon = (type: 'correct' | 'incorrect'): string => {
     switch (type) {
       case 'correct':
@@ -58,7 +59,7 @@ const Quiz = () => {
           }
           <img className="quiz-image" src={currentDay.image}/>
           <div className="choices">
-            {choices(currentDayNumber, dayNumbers).map((choice, index) => (
+            {currentChoices.map((choice, index) => (
               <button
                 key={index}
                 onClick={() => {
