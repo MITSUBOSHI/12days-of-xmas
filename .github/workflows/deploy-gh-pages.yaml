@@ -24,8 +24,8 @@ jobs:
             node-
 
       - name: Build
-        env: |
-          GITHUB_PAGES=1
+        env:
+          GITHUB_PAGES: 1
         run: |
           npm ci
           npm run build
