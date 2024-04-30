@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Days } from "./Days";
+import CorrectSVG from './assets/correct.svg';
+import IncorrectSVG from './assets/incorrect.svg';
 import './Quiz.css';
 
 type QuizResultType = {
@@ -10,6 +12,7 @@ type ChoiceType = {
   dayNumber: number;
   correct: boolean;
 };
+type QuickResultType = null | 'correct' | 'incorrect';
 
 const shuffleArray = (arr: number[]) => arr.sort(() => Math.random() - Math.random());
 const choices = (dayNumber: number, dayNumbers: number[]) => {
@@ -29,36 +32,57 @@ const choices = (dayNumber: number, dayNumbers: number[]) => {
 const Quiz = () => {
   const dayNumbers = Days.map((d) => d.dayNumber);
   const [remainingDayNumbers, setRemainingDayNumbers] = useState(shuffleArray(dayNumbers));
+  const [showQuickResult, setShowQuickResult] = useState<QuickResultType>(null);
   const [quizResult, setQuizResult] = useState<QuizResultType>({correctCount: 0, answeredCount: 0});
 
   const currentDayNumber = remainingDayNumbers[0];
   const currentDay = Days.find((d) => d.dayNumber === currentDayNumber);
+  const quickResultIcon = (type: 'correct' | 'incorrect'): string => {
+    switch (type) {
+      case 'correct':
+        return CorrectSVG;
+      case 'incorrect':
+        return IncorrectSVG;
+    }
+  };
 
   return (
     <>
       {currentDay ? 
-        <div>
-          <div>Choose the appropriate day for the drawing.</div>
-          <img src={currentDay.image}/>
-          {choices(currentDayNumber, dayNumbers).map((choice, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                if (choice.correct) {
-                  setQuizResult((r) => ({ correctCount: r.correctCount + 1, answeredCount: r.answeredCount + 1 }));
-                } else {
-                  setQuizResult((r) => ({ ...r, answeredCount: r.answeredCount + 1 }));
-                }
-                setRemainingDayNumbers((numbers) => numbers.filter((n) => n !== currentDay.dayNumber));
-              }}
-            >
-              Day {choice.dayNumber}
-            </button>
-          ))}
+        <div className="quiz-container">
+          <div className="question">Choose the appropriate day for the drawing.</div>
+          {showQuickResult && 
+            <div className="quick-result">
+              <img className="quick-result-icon" src={quickResultIcon(showQuickResult)} />
+            </div>
+          }
+          <img className="quiz-image" src={currentDay.image}/>
+          <div className="choices">
+            {choices(currentDayNumber, dayNumbers).map((choice, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  if (choice.correct) {
+                    setQuizResult((r) => ({ correctCount: r.correctCount + 1, answeredCount: r.answeredCount + 1 }));
+                    setShowQuickResult('correct');
+                  } else {
+                    setQuizResult((r) => ({ ...r, answeredCount: r.answeredCount + 1 }));
+                    setShowQuickResult('incorrect');
+                  }
+                  setTimeout(() => {
+                    setShowQuickResult(null);
+                    setRemainingDayNumbers((numbers) => numbers.filter((n) => n !== currentDay.dayNumber));
+                  }, 1000);
+                }}
+              >
+                Day {choice.dayNumber}
+              </button>
+            ))}
+          </div>
         </div>
       :
-        <div>
-          <div>Correct: {quizResult.correctCount}/{quizResult.answeredCount}</div>
+        <div className="quiz-result">
+          <div className="score">Score: {quizResult.correctCount}/{quizResult.answeredCount}</div>
           <button onClick={() => {
             setQuizResult({correctCount: 0, answeredCount: 0});
             setRemainingDayNumbers(shuffleArray(dayNumbers));
