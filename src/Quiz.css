@@ -29,11 +29,7 @@
   transform: translate(-50%, -50%);
 
   .quick-result-icon {
-    width: 100%;
-    height: 100%;
-    stroke: lightcoral;
-    fill: red;
-    animation-name: dash-animation;
+    width: 80%;
   }
 }
 
