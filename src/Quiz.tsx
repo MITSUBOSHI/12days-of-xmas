@@ -35,7 +35,7 @@ const Quiz = () => {
   const [showQuickResult, setShowQuickResult] = useState<QuickResultType>(null);
   const [quizResult, setQuizResult] = useState<QuizResultType>({correctCount: 0, answeredCount: 0});
 
-  const currentDayNumber = remainingDayNumbers[0];
+  const currentDayNumber = useMemo(() => remainingDayNumbers[0], [remainingDayNumbers]);
   const currentDay = Days.find((d) => d.dayNumber === currentDayNumber);
   const currentChoices = useMemo(() => choices(currentDayNumber, dayNumbers), [currentDayNumber]);
   const quickResultIcon = (type: 'correct' | 'incorrect'): string => {
